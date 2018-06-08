@@ -4,23 +4,23 @@
 #Receives the (sub)domain as argument when the script is called.
 
 #Check if a (sub)domain has been passed as the first argument
-#If that's the case, find its serial number.
+#If that's the case, find its serial number and create a monitoring file.
 DOMAIN=$1
 
 if  [[ $1 ]]
 then
 	SERIAL=$(dig +short soa $DOMAIN | awk '{printf $3}')
+	#Check if old SOA record exists, if it doesn't create it.
+	if [ ! -e $DOMAIN.serial.txt ]
+	then
+		touch $DOMAIN.serial.txt
+		echo "serial.txt didn't exist, created it."				#Since this is the first run, add the serial number to serial.txt
+		echo $SERIAL > $DOMAIN.serial.txt
+	fi
+	#If no domain has been passed as an argument notify the user and exit.
 else
 	echo "No (sub)domain has been passed as an argument."
-fi
-
-#Check if old SOA record exists, if it doesn't create it.
-if [ ! -e $DOMAIN.serial.txt ]
-then
-	touch $DOMAIN.serial.txt
-	echo "serial.txt didn't exist, created it."
-	#Since this is the first run, add the serial number to serial.txt
-	echo $SERIAL > $DOMAIN.serial.txt
+	exit
 fi
 
 OLDSERIAL=$(cat $DOMAIN.serial.txt)
