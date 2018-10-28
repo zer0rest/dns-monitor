@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Changing a line to test Github for Windows
+
 #Script to check for changes in the domain's SOA record serial number.
 #Receives the (sub)domain as argument when the script is called.
 
